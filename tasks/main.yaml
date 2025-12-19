@@ -1,0 +1,30 @@
+---
+- name: Validate required variables
+  ansible.builtin.assert:
+    that:
+      - domain_name is defined
+      - domain_name | length > 0
+    fail_msg: >
+      "'domain_name' must be set to a valid DNS hostname."
+    quiet: true
+
+- name: Lookup IP address of {{ domain_name }} domain
+  ansible.builtin.command: dig +short {{ domain_name }} @9.9.9.9
+  register: __current_ip_address
+  changed_when: false
+
+- name: Lookup public IP address of home connection
+  ansible.builtin.uri:
+    url: https://api.ipify.org
+    method: GET
+    return_content: true
+    status_code: 200
+  register: __new_ip_address
+
+- name: OVHcloud | Include DynHost update tasks
+  ansible.builtin.include_tasks: ovh.yaml
+  when:
+    - ovh_dynhost_state == 'present'
+    - ovh_dynhost_username | length > 0
+    - ovh_dynhost_password | length > 0
+...

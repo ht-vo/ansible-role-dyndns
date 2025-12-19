@@ -1,0 +1,23 @@
+---
+- name: OVHcloud | Update the DynHost DNS record
+  ansible.builtin.uri:
+    url: "{{ ovh_dynhost_api_url }}&hostname={{ domain_name }}&myip={{ __new_ip_address.content }}"
+    method: GET
+    return_content: true
+    force_basic_auth: true
+    user: '{{ ovh_dynhost_username }}'
+    password: '{{ ovh_dynhost_password }}'
+    status_code: 200
+  register: response
+  when:
+    - __current_ip_address.stdout != __new_ip_address.content
+
+- name: OVHcloud | Execution details
+  ansible.builtin.debug:
+    msg: |-
+      {% if __current_ip_address.stdout != __new_ip_address.content %}
+        The OVH DynHost DNS record for {{ domain_name }} domain has been updated to {{ __new_ip_address.content }}.
+      {% else %}
+        The OVH DynHost DNS record for {{ domain_name }} domain does not need an update.
+      {% endif %}
+...
