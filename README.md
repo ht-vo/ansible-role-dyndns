@@ -6,13 +6,10 @@ This Ansible role is used to update a Dynamic DNS (DDNS/DynHost) record.
 
 ## Requirements
 
-- A registered domain name with [OVHcloud](https://www.ovhcloud.com)
-
-- A configured DynHost, follow this [KB](https://help.ovhcloud.com/csm/en-ie-dns-dynhost?id=kb_article_view&sysparm_article=KB0051641):
-
-    - 1 - Create a DynHost username
-
-    - 2 - Create the dynamic DNS record
+- [ ] A registered domain name with [OVHcloud](https://www.ovhcloud.com)
+- [ ] A configured DynHost, follow this [KB](https://help.ovhcloud.com/csm/en-ie-dns-dynhost?id=kb_article_view&sysparm_article=KB0051641):
+  - [ ] KB Step 1: Create a DynHost username
+  - [ ] KB Step 2: Create the dynamic DNS record
 
 ## Usage
 
@@ -24,7 +21,7 @@ This Ansible role is used to update a Dynamic DNS (DDNS/DynHost) record.
   name: hl.dyndns
   version: v1.0.0
 ...
-``` 
+```
 
 - playbook.yaml
 
