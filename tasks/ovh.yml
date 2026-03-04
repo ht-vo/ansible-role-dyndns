@@ -1,0 +1,16 @@
+---
+- name: Push IP update to OVHcloud API
+  ansible.builtin.uri:
+    url: "{{ ovh_api_url }}&hostname={{ dyndns_hostname }}&myip={{ current_public_ip }}"
+    method: GET
+    return_content: true
+    force_basic_auth: true
+    user: '{{ ovh_username }}'
+    password: '{{ ovh_password }}'
+    status_code: 200
+  register: __ovh_api_response
+  failed_when:
+    - __ovh_api_response.status != 200
+    - "'good' not in __ovh_api_response.status and 'nochg' not in __ovh_api_response.status"
+  changed_when: "'good' in __ovh_api_response.content"
+...

@@ -1,0 +1,39 @@
+---
+- name: Run pre-flight checks
+  tags:
+    - always
+  ansible.builtin.include_tasks:
+    file: precheck.yml
+    apply:
+      tags:
+        - always
+
+- name: Gather the current DNS record and local IP
+  tags:
+    - always
+  ansible.builtin.include_tasks:
+    file: lookup.yml
+    apply:
+      tags:
+        - always
+
+- name: Updated dynamic DNS record
+  tags:
+    - "dyndns_{{ dyndns_provider }}"
+  ansible.builtin.include_tasks:
+    file: "{{ dyndns_provider }}.yml"
+    apply:
+      tags:
+        - "dyndns_{{ dyndns_provider }}"
+  when: current_dns_ip != current_public_ip
+
+- name: Verify propagation
+  tags:
+    - always
+  ansible.builtin.include_tasks:
+    file: postcheck.yml
+    apply:
+      tags:
+        - always
+  when: current_dns_ip != current_public_ip
+...

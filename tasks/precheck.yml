@@ -1,0 +1,23 @@
+---
+- name: Verify Dynamic DNS provider selection
+  ansible.builtin.assert:
+    that:
+      - dyndns_provider is defined and dyndns_provider | length > 0
+      - dyndns_provider in ['ovh']
+    fail_msg: "ERROR: '{{ dyndns_provider }}' is not a supported provider. Supported: ['ovh']"
+
+- name: Verify the target hostname is defined
+  ansible.builtin.assert:
+    that:
+      - dyndns_hostname is defined and dyndns_hostname | length > 0
+    fail_msg: "ERROR: 'dyndns_hostname' must be set to the FQDN you want to update."
+
+- name: Verify mandatory OVHcloud DynHost variables
+  ansible.builtin.assert:
+    that:
+      - ovh_api_url is defined and ovh_api_url | length > 0
+      - ovh_username is defined and ovh_username | length > 0
+      - ovh_password is defined and ovh_password | length > 0
+    fail_msg: "ERROR: 'ovh_api_url' or 'ovh_username' or 'ovh_password' must be set prior the update."
+  when: dyndns_provider == 'ovh'
+...

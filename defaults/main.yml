@@ -1,0 +1,11 @@
+---
+# common
+dyndns_provider: 'ovh'
+dyndns_hostname: ''
+dyndns_ip_lookup_url: 'https://ipv4.icanhazip.com'
+
+# ovh.yml
+ovh_api_url: 'https://dns.eu.ovhapis.com/nic/update?system=dyndns'
+ovh_username: ''
+ovh_password: ''
+...

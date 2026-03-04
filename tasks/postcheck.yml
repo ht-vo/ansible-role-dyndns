@@ -1,0 +1,13 @@
+---
+- name: Wait for DNS propagation to be complete
+  ansible.builtin.shell: |
+    python3 -c "
+    import socket
+    print(socket.gethostbyname('{{ dyndns_hostname }}'))
+    "
+  register: __dns_propagation_response
+  retries: 20
+  delay: 20
+  until: "__dns_propagation_response.stdout | trim == current_public_ip"
+  changed_when: false
+...

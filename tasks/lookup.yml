@@ -1,0 +1,32 @@
+---
+- name: "Lookup current DNS record for {{ dyndns_hostname }}"
+  ansible.builtin.shell: |
+    python3 -c "
+    import socket
+    print(socket.gethostbyname('{{ dyndns_hostname }}'))
+    "
+  register: __current_dns_ip
+  changed_when: false
+
+- name: Lookup public IP of local connection
+  ansible.builtin.uri:
+    url: "{{ dyndns_ip_lookup_url }}"
+    method: GET
+    return_content: true
+  register: __current_local_ip
+  retries: 3
+  delay: 5
+  until: __current_local_ip.status == 200
+
+- name: Set IP facts
+  ansible.builtin.set_fact:
+    current_dns_ip: "{{ __current_dns_ip.stdout | trim }}"
+    current_public_ip: "{{ __current_local_ip.content | trim }}"
+
+- name: Verify public IP format
+  ansible.builtin.assert:
+    that:
+      - "'.' in current_public_ip"
+      - "current_public_ip | split('.') | length == 4"
+    fail_msg: "ERROR: The '{{ current_public_ip }}' is not a valid IPv4 format."
+...
